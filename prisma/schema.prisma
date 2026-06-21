@@ -1,0 +1,61 @@
+// Prisma schema for Horses and More
+// Local dev: SQLite — production: change provider to "postgresql" and update DATABASE_URL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id               String    @id @default(cuid())
+  name             String
+  slug             String    @unique
+  description      String
+  shortDescription String
+  price            String?   // Display only: "From $49.95" or "POA"
+  categoryId       String
+  category         Category  @relation(fields: [categoryId], references: [id])
+  images           String    // JSON-encoded array of image paths
+  stockStatus      String    @default("IN_STOCK") // IN_STOCK | MADE_TO_ORDER | OUT_OF_STOCK
+  featured         Boolean   @default(false)
+  specs            String?   // JSON-encoded key/value pairs
+  enquiries        Enquiry[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Enquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  status    String   @default("NEW") // NEW | CONTACTED | CLOSED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

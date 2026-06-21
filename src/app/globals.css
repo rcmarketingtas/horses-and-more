@@ -1,0 +1,66 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@theme {
+  /* Brand palette: strictly black / white / grey */
+  --color-brand-white: #ffffff;
+  --color-brand-offwhite: #fafafa;
+  --color-brand-light: #e5e5e5;
+  --color-brand-mid: #888888;
+  --color-brand-charcoal: #1a1a1a;
+  --color-brand-black: #000000;
+
+  /* Semantic mappings */
+  --color-background: var(--color-brand-white);
+  --color-foreground: var(--color-brand-black);
+  --color-muted: var(--color-brand-offwhite);
+  --color-muted-foreground: var(--color-brand-mid);
+  --color-border: var(--color-brand-light);
+  --color-ring: var(--color-brand-black);
+
+  /* Typography */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Letter spacing */
+  --tracking-widest: 0.2em;
+  --tracking-wider: 0.1em;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  min-height: 100dvh;
+}
+
+/* Focus ring — monochrome */
+:focus-visible {
+  outline: 2px solid var(--color-brand-black);
+  outline-offset: 2px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-brand-offwhite);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-light);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-mid);
+}
