@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+import { getCategoryBySlug, getCategorySlugs, getProducts } from "@/lib/data";
 import ProductCard from "@/components/shop/ProductCard";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -11,47 +11,27 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const category = await prisma.category.findUnique({ where: { slug } });
+  const category = getCategoryBySlug(slug);
   if (!category) return {};
   return {
     title: `${category.name} — Shop`,
-    description:
-      category.description ??
-      `Browse ${category.name} products at Horses and More.`,
+    description: `Browse ${category.name} products at Horses and More.`,
   };
 }
 
-export async function generateStaticParams() {
-  const categories = await prisma.category.findMany({
-    select: { slug: true },
-  });
-  return categories.map((c) => ({ slug: c.slug }));
+export function generateStaticParams() {
+  return getCategorySlugs().map((slug) => ({ slug }));
 }
 
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
-
-  const category = await prisma.category.findUnique({
-    where: { slug },
-    include: {
-      products: {
-        include: { category: true },
-        orderBy: { createdAt: "desc" },
-      },
-    },
-  });
-
+  const category = getCategoryBySlug(slug);
   if (!category) notFound();
 
-  const products = category.products.map((p) => ({
-    ...p,
-    images: JSON.parse(p.images) as string[],
-    specs: p.specs ? (JSON.parse(p.specs) as Record<string, string>) : null,
-  }));
+  const products = getProducts({ categorySlug: slug });
 
   return (
     <div className="min-h-screen bg-white pt-16">
-      {/* Header */}
       <div className="bg-[#0a0a0a] text-white py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <Link
@@ -64,11 +44,11 @@ export default async function CategoryPage({ params }: Props) {
             Category
           </p>
           <h1 className="text-5xl md:text-6xl font-light tracking-tight mb-4">
-            {category.name}
+            {category!.name}
           </h1>
-          {category.description && (
+          {category!.description && (
             <p className="text-[#555] max-w-xl text-sm leading-relaxed">
-              {category.description}
+              {category!.description}
             </p>
           )}
           <p className="text-[#555] mt-3 text-sm">

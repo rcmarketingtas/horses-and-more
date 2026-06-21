@@ -1,105 +1,68 @@
-import { prisma } from "@/lib/prisma";
+import { getProducts, getCategories } from "@/lib/data";
 import Link from "next/link";
-import { ArrowRight, MessageSquare, Package, TrendingUp } from "lucide-react";
+import { ArrowRight, MessageSquare, Package, Info } from "lucide-react";
 
-export default async function AdminDashboard() {
-  const [enquiryCount, newEnquiryCount, productCount] = await Promise.all([
-    prisma.enquiry.count(),
-    prisma.enquiry.count({ where: { status: "NEW" } }),
-    prisma.product.count(),
-  ]);
-
-  const recentEnquiries = await prisma.enquiry.findMany({
-    take: 5,
-    orderBy: { createdAt: "desc" },
-    include: { product: { select: { name: true } } },
-  });
+export default function AdminDashboard() {
+  const products = getProducts();
+  const featured = products.filter((p) => p.featured).length;
+  const categories = getCategories();
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-8">Dashboard</h1>
+      <h1 className="text-2xl font-semibold mb-2">Dashboard</h1>
+      <p className="text-sm text-[#888] mb-8">
+        Prototype mode — enquiries are emailed to the store owner. No database connected.
+      </p>
+
+      {/* Info banner */}
+      <div className="flex items-start gap-3 bg-[#fafafa] border border-[#e5e5e5] p-5 mb-8 text-sm text-[#444]">
+        <Info className="h-4 w-4 text-[#888] mt-0.5 flex-shrink-0" />
+        <p>
+          This is a prototype site. Product data is stored in static JSON files at{" "}
+          <code className="text-xs bg-[#f0f0f0] px-1.5 py-0.5">src/data/products.json</code>.
+          To add or edit products, update that file and redeploy. Enquiries are emailed
+          to the store owner address set in the <code className="text-xs bg-[#f0f0f0] px-1.5 py-0.5">STORE_OWNER_EMAIL</code> environment variable.
+        </p>
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
         <div className="bg-white border border-[#e5e5e5] p-6">
-          <div className="flex items-center justify-between mb-3">
-            <MessageSquare className="h-5 w-5 text-[#888]" />
-            {newEnquiryCount > 0 && (
-              <span className="text-xs font-bold bg-black text-white px-2 py-0.5">
-                {newEnquiryCount} new
-              </span>
-            )}
-          </div>
-          <p className="text-3xl font-bold text-black">{enquiryCount}</p>
-          <p className="text-xs text-[#888] uppercase tracking-wider mt-1">
-            Total Enquiries
-          </p>
+          <Package className="h-5 w-5 text-[#888] mb-3" />
+          <p className="text-3xl font-bold text-black">{products.length}</p>
+          <p className="text-xs text-[#888] uppercase tracking-wider mt-1">Total Products</p>
         </div>
         <div className="bg-white border border-[#e5e5e5] p-6">
           <Package className="h-5 w-5 text-[#888] mb-3" />
-          <p className="text-3xl font-bold text-black">{productCount}</p>
-          <p className="text-xs text-[#888] uppercase tracking-wider mt-1">
-            Products
-          </p>
+          <p className="text-3xl font-bold text-black">{categories.length}</p>
+          <p className="text-xs text-[#888] uppercase tracking-wider mt-1">Categories</p>
         </div>
         <div className="bg-white border border-[#e5e5e5] p-6">
-          <TrendingUp className="h-5 w-5 text-[#888] mb-3" />
-          <p className="text-3xl font-bold text-black">{newEnquiryCount}</p>
-          <p className="text-xs text-[#888] uppercase tracking-wider mt-1">
-            Pending Response
-          </p>
+          <MessageSquare className="h-5 w-5 text-[#888] mb-3" />
+          <p className="text-3xl font-bold text-black">{featured}</p>
+          <p className="text-xs text-[#888] uppercase tracking-wider mt-1">Featured Products</p>
         </div>
       </div>
 
-      {/* Recent enquiries */}
+      {/* Quick links */}
       <div className="bg-white border border-[#e5e5e5]">
-        <div className="flex items-center justify-between p-6 border-b border-[#e5e5e5]">
-          <h2 className="font-semibold text-sm uppercase tracking-widest">
-            Recent Enquiries
-          </h2>
+        <div className="p-6 border-b border-[#e5e5e5]">
+          <h2 className="font-semibold text-sm uppercase tracking-widest">Quick Links</h2>
+        </div>
+        {[
+          { label: "View all products", href: "/admin/products" },
+          { label: "Browse shop (live)", href: "/shop" },
+          { label: "Contact page", href: "/contact" },
+        ].map((l) => (
           <Link
-            href="/admin/enquiries"
-            className="text-xs text-[#888] hover:text-black flex items-center gap-1 transition-colors"
+            key={l.href}
+            href={l.href}
+            className="flex items-center justify-between p-5 border-b border-[#f5f5f5] last:border-b-0 hover:bg-[#fafafa] transition-colors text-sm"
           >
-            View all <ArrowRight className="h-3 w-3" />
+            {l.label}
+            <ArrowRight className="h-4 w-4 text-[#888]" />
           </Link>
-        </div>
-        <div>
-          {recentEnquiries.length === 0 ? (
-            <p className="p-6 text-sm text-[#888]">No enquiries yet.</p>
-          ) : (
-            recentEnquiries.map((e) => (
-              <div
-                key={e.id}
-                className="flex items-center justify-between p-5 border-b border-[#f5f5f5] last:border-b-0 hover:bg-[#fafafa] transition-colors"
-              >
-                <div>
-                  <p className="text-sm font-medium text-black">{e.name}</p>
-                  <p className="text-xs text-[#888] mt-0.5">
-                    {e.email}
-                    {e.product ? ` — ${e.product.name}` : ""}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span
-                    className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 ${
-                      e.status === "NEW"
-                        ? "bg-black text-white"
-                        : e.status === "CONTACTED"
-                          ? "bg-[#e5e5e5] text-black"
-                          : "bg-[#f5f5f5] text-[#888]"
-                    }`}
-                  >
-                    {e.status}
-                  </span>
-                  <p className="text-[11px] text-[#888] mt-1">
-                    {new Date(e.createdAt).toLocaleDateString("en-AU")}
-                  </p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        ))}
       </div>
     </div>
   );

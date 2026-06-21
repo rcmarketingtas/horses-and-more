@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+import { getCategories, getProducts } from "@/lib/data";
 import ShopClient from "./ShopClient";
 
 export const metadata: Metadata = {
@@ -16,49 +16,17 @@ export default async function ShopPage({
   const params = await searchParams;
   const { category, search, sort } = params;
 
-  const [categories, products] = await Promise.all([
-    prisma.category.findMany({ orderBy: { name: "asc" } }),
-    prisma.product.findMany({
-      where: {
-        ...(category ? { category: { slug: category } } : {}),
-        ...(search
-          ? {
-              OR: [
-                { name: { contains: search } },
-                { shortDescription: { contains: search } },
-                { description: { contains: search } },
-              ],
-            }
-          : {}),
-      },
-      include: { category: true },
-      orderBy:
-        sort === "price-asc"
-          ? { price: "asc" }
-          : sort === "price-desc"
-            ? { price: "desc" }
-            : sort === "name"
-              ? { name: "asc" }
-              : { createdAt: "desc" },
-    }),
-  ]);
-
-  const serialisedProducts = products.map((p) => ({
-    ...p,
-    images: JSON.parse(p.images) as string[],
-    specs: p.specs ? (JSON.parse(p.specs) as Record<string, string>) : null,
-    createdAt: p.createdAt.toISOString(),
-    updatedAt: p.updatedAt.toISOString(),
-  }));
+  const categories = getCategories();
+  const products = getProducts({
+    categorySlug: category,
+    search,
+    sort,
+  });
 
   return (
     <ShopClient
-      products={serialisedProducts}
-      categories={categories.map((c) => ({
-        ...c,
-        createdAt: c.createdAt.toISOString(),
-        updatedAt: c.updatedAt.toISOString(),
-      }))}
+      products={products}
+      categories={categories}
       initialSearch={search ?? ""}
       initialCategory={category ?? ""}
       initialSort={sort ?? "newest"}

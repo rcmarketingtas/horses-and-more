@@ -1,0 +1,51 @@
+[
+  {
+    "id": "cat_tack",
+    "name": "Tack",
+    "slug": "tack",
+    "description": "Premium saddles, bridles, bits, reins and all riding tack for English and Western disciplines.",
+    "image": "/images/categories/tack.jpg"
+  },
+  {
+    "id": "cat_rugs",
+    "name": "Rugs & Blankets",
+    "slug": "rugs-blankets",
+    "description": "Horse rugs for all seasons — turnout, stable, fleece coolers and more.",
+    "image": "/images/categories/rugs-blankets.jpg"
+  },
+  {
+    "id": "cat_feed",
+    "name": "Feed & Supplements",
+    "slug": "feed-supplements",
+    "description": "Quality horse feeds, hay, grain and nutritional supplements for peak performance.",
+    "image": "/images/categories/feed-supplements.jpg"
+  },
+  {
+    "id": "cat_grooming",
+    "name": "Grooming",
+    "slug": "grooming",
+    "description": "Brushes, combs, shampoos, conditioners and complete grooming kits.",
+    "image": "/images/categories/grooming.jpg"
+  },
+  {
+    "id": "cat_stable",
+    "name": "Stable Equipment",
+    "slug": "stable-equipment",
+    "description": "Buckets, feeders, hay nets, stable mats, fencing and everything for your stable.",
+    "image": "/images/categories/stable-equipment.jpg"
+  },
+  {
+    "id": "cat_apparel",
+    "name": "Apparel",
+    "slug": "apparel",
+    "description": "Riding boots, helmets, jodhpurs, breeches and technical equestrian apparel.",
+    "image": "/images/categories/apparel.jpg"
+  },
+  {
+    "id": "cat_health",
+    "name": "Health & First Aid",
+    "slug": "health-first-aid",
+    "description": "First aid kits, wound care, liniments, fly sprays and health supplements.",
+    "image": "/images/categories/health-first-aid.jpg"
+  }
+]
