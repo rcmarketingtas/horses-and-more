@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 interface Category {
@@ -9,6 +10,7 @@ interface Category {
   name: string;
   slug: string;
   description: string | null;
+  image?: string | null;
 }
 
 interface Props {
@@ -17,9 +19,7 @@ interface Props {
 
 const containerVariants = {
   hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.07 },
-  },
+  visible: { transition: { staggerChildren: 0.07 } },
 };
 
 const itemVariants = {
@@ -57,26 +57,41 @@ export default function CategoriesGrid({ categories }: Props) {
             <motion.div key={cat.id} variants={itemVariants}>
               <Link
                 href={`/shop/category/${cat.slug}`}
-                className="group block bg-white p-8 hover:bg-black transition-colors duration-300 min-h-[200px] flex flex-col justify-between"
+                className="group block bg-white hover:bg-black transition-colors duration-300 relative overflow-hidden min-h-[260px] flex flex-col justify-end"
               >
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#888] group-hover:text-white/50 transition-colors mb-3">
+                {/* Background image */}
+                {cat.image && (
+                  <div className="absolute inset-0">
+                    <Image
+                      src={cat.image}
+                      alt={cat.name}
+                      fill
+                      className="object-cover opacity-30 group-hover:opacity-20 transition-opacity duration-300"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent group-hover:from-black group-hover:via-black/80 transition-colors duration-300" />
+                  </div>
+                )}
+
+                {/* Content */}
+                <div className="relative z-10 p-8">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#888] group-hover:text-white/50 transition-colors mb-2">
                     Category
                   </p>
-                  <h3 className="text-2xl font-light text-black group-hover:text-white transition-colors mb-3">
+                  <h3 className="text-2xl font-light text-black group-hover:text-white transition-colors mb-2">
                     {cat.name}
                   </h3>
                   {cat.description && (
-                    <p className="text-sm text-[#888] group-hover:text-white/60 transition-colors leading-relaxed line-clamp-2">
+                    <p className="text-sm text-[#888] group-hover:text-white/60 transition-colors leading-relaxed line-clamp-2 mb-5">
                       {cat.description}
                     </p>
                   )}
-                </div>
-                <div className="flex items-center gap-2 mt-6">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-black group-hover:text-white transition-colors">
-                    Shop Now
-                  </span>
-                  <ArrowRight className="h-3.5 w-3.5 text-black group-hover:text-white transition-all group-hover:translate-x-1" />
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-black group-hover:text-white transition-colors">
+                      Shop Now
+                    </span>
+                    <ArrowRight className="h-3.5 w-3.5 text-black group-hover:text-white transition-all group-hover:translate-x-1" />
+                  </div>
                 </div>
               </Link>
             </motion.div>

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 export default function StorySection() {
@@ -18,25 +19,16 @@ export default function StorySection() {
             className="relative"
           >
             <div className="aspect-[4/5] bg-[#0a0a0a] relative overflow-hidden">
-              {/* Textured placeholder */}
-              <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)",
-                  backgroundSize: "10px 10px",
-                }}
+              <Image
+                src="/images/categories/stable-equipment.jpg"
+                alt="Our stable — Horses and More"
+                fill
+                className="object-cover opacity-60"
+                sizes="(max-width: 1024px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
-                <span className="text-[8rem] font-bold text-white/5 leading-none select-none">
-                  15+
-                </span>
-                <p className="text-white/40 text-sm font-medium uppercase tracking-widest mt-4">
-                  Years of Excellence
-                </p>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               {/* Year badge */}
-              <div className="absolute bottom-6 right-6 border border-white/20 p-4 text-center">
+              <div className="absolute bottom-6 right-6 border border-white/20 bg-black/50 backdrop-blur-sm p-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-widest text-white/50">
                   Est.
                 </p>

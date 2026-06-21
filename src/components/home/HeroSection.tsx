@@ -2,31 +2,32 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a]">
-      {/* Background pattern — editorial grid lines */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
+      {/* Background image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/sections/hero-horse.jpg"
+          alt="Horses and More — Premium Equestrian Supplies"
+          fill
+          className="object-cover opacity-40"
+          priority
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
+      </div>
 
       {/* Large decorative text */}
       <div
         className="absolute inset-0 flex items-center justify-center select-none pointer-events-none"
         aria-hidden
       >
-        <span
-          className="text-[20vw] font-bold tracking-tighter text-white/[0.03] leading-none"
-          style={{ fontFamily: "var(--font-geist-sans)" }}
-        >
+        <span className="text-[20vw] font-bold tracking-tighter text-white/[0.03] leading-none">
           EQUINE
         </span>
       </div>
@@ -68,13 +69,21 @@ export default function HeroSection() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Button asChild size="lg" className="bg-white text-black border-white hover:bg-transparent hover:text-white hover:border-white">
+          <Button
+            asChild
+            size="lg"
+            className="bg-white text-black border-white hover:bg-transparent hover:text-white hover:border-white"
+          >
             <Link href="/shop">
-              Shop Now
-              <ArrowRight className="h-4 w-4 ml-1" />
+              Shop Now <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="lg" className="text-white border-white/30 hover:bg-white/10 hover:text-white hover:border-white/50">
+          <Button
+            asChild
+            variant="ghost"
+            size="lg"
+            className="text-white border-white/30 hover:bg-white/10 hover:text-white hover:border-white/50"
+          >
             <Link href="/contact">Enquire Now</Link>
           </Button>
         </motion.div>
